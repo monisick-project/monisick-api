@@ -1,0 +1,126 @@
+GET  http://localhost:5000/auth/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJJa25hbmlzd2EiLCJlbWFpbCI6ImlrbmEyQGdtYWlsLmNvbSIsImlhdCI6MTczMTg2ODQ2MCwiZXhwIjoxNzMxODY4NDc1fQ.A6XNZIF3N-A6i3Ny-awRatQ6g5MBCONL0GtO1Hnzncs
+
+###
+POST http://localhost:5000/auth/register
+Content-Type: application/json
+
+{
+    "name": "Iknaniswa",
+    "email": "ikna3@gmail.com",
+    "password": "12345",
+    "confPassword": "12345"
+}
+
+###
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+    "email": "ikna3@gmail.com",
+    "password": "12345"
+}
+
+###
+GET http://localhost:5000/auth/token
+
+###
+DELETE http://localhost:5000/auth/logout
+
+###
+POST http://localhost:5000/monitoring-periods
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsIm5hbWUiOiJJa25hbmlzd2EiLCJlbWFpbCI6ImlrbmEzQGdtYWlsLmNvbSIsImlhdCI6MTczMjEwODg1NywiZXhwIjoxNzMyMTA4ODcyfQ.SgxXstwGzlCjW8ivF06cGaAjTSqo5JD_R80QDYiARRw
+
+{
+    "start_date": "2024-12-18",
+    "end_date": "2024-11-20"
+}
+
+
+###
+GET http://localhost:5000/monitoring-periods
+Authorization: Bearer 
+
+###
+PUT http://localhost:5000/monitoring-periods/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsIm5hbWUiOiJJa25hbmlzd2EiLCJlbWFpbCI6ImlrbmEzQGdtYWlsLmNvbSIsImlhdCI6MTczMjEwODgyOCwiZXhwIjoxNzMyMTA4ODQzfQ.cUnpKJy06tvhltMVar9EMomYYD5SqFDZpWFETOj8a78
+
+{
+    "start_date": "2024-12-10",
+    "end_date": "2024-12-20"
+}
+
+###
+DELETE http://localhost:5000/monitoring-periods/expired
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsIm5hbWUiOiJJa25hbmlzd2EiLCJlbWFpbCI6ImlrbmEzQGdtYWlsLmNvbSIsImlhdCI6MTczMjEwODg3MSwiZXhwIjoxNzMyMTA4ODg2fQ.epr9TQmLt1Q7WsJ5XmknaeGt_IVZAxiq_GxNjm5YKbQ
+
+###
+DELETE http://localhost:5000/monitoring-periods/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsIm5hbWUiOiJJa25hbmlzd2EiLCJlbWFpbCI6ImlrbmEzQGdtYWlsLmNvbSIsImlhdCI6MTczMjEwODc1MiwiZXhwIjoxNzMyMTA4NzY3fQ.-ugy_oUJmyuMGiz2_OrOWdvgr3U2FAUG2mbl1_A93yk
+
+
+
+###
+POST http://localhost:5000/monitoring-periods/12/medications
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsIm5hbWUiOiJJa25hbmlzd2EiLCJlbWFpbCI6ImlrbmEzQGdtYWlsLmNvbSIsImlhdCI6MTczMjEwOTYyNiwiZXhwIjoxNzMyMTA5NjQxfQ.etxNM-jZVl8WtpGFvCNo-o1yNT2NX2_rmVdRRWDNUyk
+
+{
+    "medication_name": "Paracetamol",
+    "frequency": ["Morning", "Evening"],
+    "scheduleTime": ["08:00", "20:00"]
+}
+
+
+###
+GET http://localhost:5000/monitoring-periods/12/medications
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsIm5hbWUiOiJJa25hbmlzd2EiLCJlbWFpbCI6ImlrbmEzQGdtYWlsLmNvbSIsImlhdCI6MTczMjExMDE5MSwiZXhwIjoxNzMyMTEwMjA2fQ.ulPxx17LjzXCz7dcoc3zgP2FM0Uf-V7kyOTDgXcTM_E
+
+###
+PUT http://localhost:5000/monitoring-periods/12/medications/:id
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsIm5hbWUiOiJJa25hbmlzd2EiLCJlbWFpbCI6ImlrbmEzQGdtYWlsLmNvbSIsImlhdCI6MTczMjAyMzczMiwiZXhwIjoxNzMyMDIzNzQ3fQ.nazlmcUBtN29qmpD0hLYyXBoIA2nS3amXUnkJMTUVjw
+
+{
+    "medication_name": "Bodrex",
+    "frequency": ["morning", "night"],
+    "scheduleTime": ["08:00", "13:00", "20:00"]
+}
+
+###
+DELETE http://localhost:5000/monitoring-periods/12/medications/:id
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsIm5hbWUiOiJJa25hbmlzd2EiLCJlbWFpbCI6ImlrbmEzQGdtYWlsLmNvbSIsImlhdCI6MTczMjAyNDM0MiwiZXhwIjoxNzMyMDI0MzU3fQ.TTC9HGb_0iD4qWnOlYPv1grw_rNbm3SEJ2pVRSgRyCc
+
+###
+POST http://localhost:5000/notifications
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsIm5hbWUiOiJJa25hbmlzd2EiLCJlbWFpbCI6ImlrbmEzQGdtYWlsLmNvbSIsImlhdCI6MTczMjI3NzU1MiwiZXhwIjoxNzMyMjc3NTY3fQ.-lM1W_R3we3sTIc4Y7tAPxDGaEmjamU1fxoRYC-cWxw
+
+{
+    "message": "Time to take Paracetamol",
+    "status": "pending",
+    "medicationId": 1
+}
+
+###
+GET http://localhost:5000/notifications
+Authorization: Bearer 
+
+###
+PUT http://localhost:5000/notification/1
+Content-Type: application/json
+Authorization: Bearer
+
+{
+    "status": "taken"
+}
+
+###
+DELETE http://localhost:5000/notification/1
+Authorization: Bearer 
+
+
