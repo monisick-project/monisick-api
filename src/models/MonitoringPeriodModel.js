@@ -5,6 +5,10 @@ import Medications from "./MedicationModel.js";
 const { DataTypes } = Sequelize;
 
 const MonitoringPeriod = db.define('monitoring_periods', {
+    monitoring_name: {
+        type: DataTypes.STRING,
+        allowNull: false,  // Monitoring name is required
+    },
     start_date: {
         type: DataTypes.DATE,
         allowNull: false
@@ -35,3 +39,4 @@ Medications.belongsTo(MonitoringPeriod, {
     foreignKey: "monitoringPeriodId"
 });
 export default MonitoringPeriod;
+
