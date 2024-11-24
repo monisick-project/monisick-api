@@ -1,36 +1,41 @@
-import { DataTypes } from "sequelize";
+import { Sequelize } from "sequelize";
 import db from "../config/Database.js";
 import Medications from "./MedicationModel.js";
 
+const { DataTypes } = Sequelize;
+
 const Notifications = db.define("notifications", {
-    notificationId: {
+    id: {
         type: DataTypes.INTEGER,
-        autoIncrement: true,
         primaryKey: true,
+        autoIncrement: true,
     },
     message: {
         type: DataTypes.STRING,
         allowNull: false,
     },
     status: {
-        type: DataTypes.ENUM("taken", "skip"),
+        type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: "skip",
+        defaultValue: "pending", // 'pending', 'taken', or 'missed'
+    },
+    scheduled_time: {
+        type: DataTypes.TIME,
+        allowNull: false,
     },
     medicationId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         references: {
             model: Medications,
-            key: 'id'
-        }
-    }
-},{
-    freezeTableName: true
+            key: "id",
+        },
+        onDelete: "CASCADE",
+    },
+}, {
+    freezeTableName: true,
 });
 
-// Relasi dengan Medication
-Medications.hasMany(Notifications, { foreignKey: "medicationId" });
+Medications.hasMany(Notifications, { foreignKey: "medicationId", onDelete: "CASCADE" });
 Notifications.belongsTo(Medications, { foreignKey: "medicationId" });
 
 export default Notifications;

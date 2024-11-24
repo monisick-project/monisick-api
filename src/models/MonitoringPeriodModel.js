@@ -39,4 +39,3 @@ Medications.belongsTo(MonitoringPeriod, {
     foreignKey: "monitoringPeriodId"
 });
 export default MonitoringPeriod;
-

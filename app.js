@@ -8,6 +8,7 @@ import db from "./src/config/Database.js";
 import router from "./src/routes/Routes.js";
 dotenv.config();
 
+
 const app = express();
 
 try {

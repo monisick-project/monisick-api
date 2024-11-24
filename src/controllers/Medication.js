@@ -1,51 +1,50 @@
 import Medications from "../models/MedicationModel.js";
+import { createNotificationsForMedication } from "./Notification.js";
 
-// Create Medication
+// Create Medication for a specific Monitoring Period
 export const createMedication = async (req, res) => {
-    const { medication_name, frequency, scheduleTime } = req.body;
-    const { monitoringPeriodId } = req.params; // Ambil ID dari parameter URL
-
+    const { medication_name, frequency, before_after_meal, schedule_time } = req.body;
+    const { monitoringPeriodId } = req.params;  // Mengambil monitoringPeriodId dari URL parameter
     try {
-        const newMedication = await Medications.create({
+        const medication = await Medications.create({
             medication_name,
-            frequency,
-            scheduleTime,
-            monitoringPeriodId
+            frequency, // ["morning", "afternoon", "evening"]
+            before_after_meal,
+            schedule_time, // ["08:00", "12:00", "20:00"]
+            monitoringPeriodId,  // Gunakan monitoringPeriodId dari URL
         });
-
-        res.status(201).json({ msg: "Medication added successfully" });
+        // Buat notifikasi otomatis
+        await createNotificationsForMedication(medication);
+        res.status(201).json({ msg: "Medication added successfully"});
     } catch (error) {
         console.error(error);
-        res.status(500).json({ msg: "An error occurred while adding the medication" });
+        res.status(500).json({ msg: "Server error" });
     }
 };
+
 
 // Read Medications
 export const getMedications = async (req, res) => {
     const { monitoringPeriodId } = req.params; // Ambil ID dari parameter URL
-
     try {
         const medications = await Medications.findAll({
             where: { monitoringPeriodId },
-            attributes: ['medication_name', 'frequency', 'scheduleTime', 'monitoringPeriodId'],
+            attributes: ['medication_name', 'frequency', 'before_after_meal', 'schedule_time', 'monitoringPeriodId'],
         });
-
         res.status(200).json({
             message: "Medications retrieved successfully",
             data: medications,
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({
-            msg: "An error occurred while retrieving medications",
-        });
+        res.status(500).json({msg: "An error occurred while retrieving medications"});
     }
 };
 
 // Update Medication
 export const updateMedication = async (req, res) => {
     const { id, monitoringPeriodId } = req.params; // Ambil ID dari parameter URL
-    const { medication_name, frequency, scheduleTime } = req.body;
+    const { medication_name, frequency, before_after_meal, schedule_time } = req.body;
 
     try {
         // Cari berdasarkan ID dan monitoringPeriodId
@@ -55,12 +54,12 @@ export const updateMedication = async (req, res) => {
         if (!medication) {
             return res.status(404).json({ msg: "Medication not found" });
         }
-
         await Medications.update(
             {
                 medication_name,
                 frequency,
-                scheduleTime,
+                before_after_meal, 
+                schedule_time,
             },
             { where: { id, monitoringPeriodId } }
         );

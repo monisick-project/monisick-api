@@ -1,33 +1,36 @@
+STANDAR API
+{root.api}/{version}/{grouping}/{endpoint}
+
 GROUP : Authentication
 [1] Register
-endpoint: api/auth/register
+endpoint: /api/auth/register
 method : POST
 req:
     {
-    "name": "string",
+    "username": "string",
     "email": "string",
     "password": "string",
-    "confPassword": "string"
     }
 res:
     {
-    "message": "Successfully Registered",
-    "userId": "int"
+    "message": "User registered successfully",
+    "userId": "abc123"
     }
 status:
 201 Created: Jika registrasi berhasil.
 400 Bad Request: Jika ada masalah dalam input data.
 
 [2] Login
-endpoint: api/auth/login
+endpoint: /api/auth/login
 method: POST
 req:
     {
-    "email": "string",
+    "username": "string",
     "password": "string"
     }
 res:
     {
+    "message": "Login successful",
     "token": "jwt_token"
     }
 status:
@@ -38,7 +41,7 @@ status:
 GROUP : Monitoring Periode
 [1] Create Monitoring Periode
 desk: Menambahkan periode monitoring untuk user. 
-endpoint: api/monitoring-periods
+endpoint: /api/monitoring-periods
 method: POST
 req:
     {
@@ -47,8 +50,8 @@ req:
     }
 res:
 {
-  "message": "Monitoring Period has created successfully",
-  "monitoringPeriod_id": "int"
+  "message": "Monitoring period set successfully",
+  "monitoringPeriod_id": "mon123"
 }
 status:
 201 Created: Jika periode berhasil disimpan.
@@ -56,43 +59,19 @@ status:
 
 [2] Read Monitoring Periode
 desk: Mendapatkan periode monitoring user saat ini.
-endpoint: api/monitoring-periods
+endpoint: /api/monitoring-periods
 method: GET
 req:
 Authorization: Bearer token (JWT)
 res:
 {
-  "monitoringPeriod_id": "int",
+  "monitoringPeriod_id": "mon123",
   "start_date": "date",
   "end_date": "date"
 }
 status:
 200 OK: Jika user memiliki periode monitoring yang aktif.
 
-[3] Update Monitoring Periode
-desk : Mengubah periode monitoring user yang telah dibuat
-endpoint : api/monitoring-periods/:id
-method : PUT
-req:
-{
-    "start_date": "date",
-    "end_date": "date"
-}
-res:
- "message": "Monitoring Period has been updated successfully"
-status:
-200 OK
-
-[3] Delete Monitoring Periode
-desk : Menghapus periode monitoring user yang telah dibuat
-endpoint : api/monitoring-periods/:id
-method : DELETE
-req:
-Authorization: Bearer token (JWT)
-res:
- "message": "Monitoring Period and related medications deleted successfully"
-status:
-200 OK
 
 GROUP : Medication
 [1] Create medication

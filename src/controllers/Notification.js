@@ -1,76 +1,57 @@
 import Notifications from "../models/NotificationModel.js";
 import Medications from "../models/MedicationModel.js";
 
-// Saat pengguna menambahkan obat, notifikasi bisa dibuat secara otomatis.
 export const createNotificationsForMedication = async (medication) => {
-    const scheduleTimes = medication.scheduleTime; 
-    const notifications = scheduleTimes.map((time) => ({
-        message: `Time to take your medication: ${medication.medication_name}`,
-        status: "skip",
-        medicationId: medication.id,
-        scheduleTime: time,
-    }));
+    try {
+        const { id, medication_name, schedule_time } = medication;
+        const notifications = schedule_time.map((time) => ({
+            message: `Time to take your medication: ${medication_name}`,
+            scheduled_time: time,
+            medicationId: id,
+        }));
 
-    await Notifications.bulkCreate(notifications);
+        await Notifications.bulkCreate(notifications);
+        console.log("Notifications created successfully");
+    } catch (error) {
+        console.error("Error creating notifications:", error);
+    }
 };
-// Hook pada Medication untuk otomatis membuat notifikasi
-Medications.afterCreate(async (medication, options) => {
-    await createNotificationsForMedication(medication);
-});
 
-
-// Ambil Notifikasi Berdasarkan Obat atau Waktu Tertentu
+// Get all notifications for a specific medication
 export const getNotifications = async (req, res) => {
-    const { medicationId } = req.query;
-
+    const { medicationId } = req.params;
     try {
         const notifications = await Notifications.findAll({
-            where: { medicationId },
-            attributes: ["notificationId", "message", "status"],
+            where: { medicationId }, // Filter berdasarkan medicationId
+            attributes: ["message", "status", "scheduled_time"],
         });
+        if (!notifications.length) {
+            return res.status(404).json({ msg: "No notifications found for this medication" });
+        }
         res.status(200).json(notifications);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ msg: "Error retrieving notifications" });
+        res.status(500).json({ msg: "Server error" });
     }
 };
 
-
-// Update Status Notifikasi
+// Update notification status
 export const updateNotificationStatus = async (req, res) => {
-    const { id } = req.params; // notificationId
-    const { status } = req.body;
-
-    if (!["taken", "skip"].includes(status)) {
-        return res.status(400).json({ msg: "Invalid status value" });
+    const { id } = req.params; // ID notifikasi
+    const { status } = req.body; // Status baru: 'taken' atau 'missed'
+    if (!["taken", "missed"].includes(status)) {
+        return res.status(400).json({ msg: "Invalid status" });
     }
-
     try {
         const notification = await Notifications.findByPk(id);
         if (!notification) {
             return res.status(404).json({ msg: "Notification not found" });
         }
-
         notification.status = status;
         await notification.save();
         res.status(200).json({ msg: "Notification status updated successfully" });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ msg: "Error updating notification status" });
-    }
-};
-
-// Delete Notification
-export const deleteNotification = async (req, res) => {
-    const { id } = req.params;
-    try {
-        const result = await Notifications.destroy({ where: { notificationId: id } });
-        if (!result) {
-            return res.status(404).json({ msg: "Notification not found" });
-        }
-        res.json({ msg: "Notification deleted successfully" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: "Failed to delete notification" });
+        res.status(500).json({ msg: "Server error" });
     }
 };
