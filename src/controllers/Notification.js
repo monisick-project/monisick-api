@@ -1,6 +1,7 @@
 import Notifications from "../models/NotificationModel.js";
 import Medications from "../models/MedicationModel.js";
 
+// Create notification when medication created
 export const createNotificationsForMedication = async (medication) => {
     try {
         const { id, medication_name, schedule_time } = medication;
@@ -9,7 +10,6 @@ export const createNotificationsForMedication = async (medication) => {
             scheduled_time: time,
             medicationId: id,
         }));
-
         await Notifications.bulkCreate(notifications);
         console.log("Notifications created successfully");
     } catch (error) {
@@ -22,7 +22,7 @@ export const getNotifications = async (req, res) => {
     const { medicationId } = req.params;
     try {
         const notifications = await Notifications.findAll({
-            where: { medicationId }, // Filter berdasarkan medicationId
+            where: { medicationId }, 
             attributes: ["message", "status", "scheduled_time"],
         });
         if (!notifications.length) {
@@ -37,8 +37,8 @@ export const getNotifications = async (req, res) => {
 
 // Update notification status
 export const updateNotificationStatus = async (req, res) => {
-    const { id } = req.params; // ID notifikasi
-    const { status } = req.body; // Status baru: 'taken' atau 'missed'
+    const { id } = req.params;
+    const { status } = req.body; 
     if (!["taken", "missed"].includes(status)) {
         return res.status(400).json({ msg: "Invalid status" });
     }
