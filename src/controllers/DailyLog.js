@@ -3,9 +3,8 @@ import DailyLog from "../models/DailyLogModel.js";
 // Create Daily Log
 export const createDailyLog = async (req, res) => {
     const { monitoringPeriodId } = req.params;
-    const { content } = req.body; // log_date tidak diambil dari body
-    const log_date = req.body.log_date || new Date().toISOString().split("T")[0]; // Tanggal default = hari ini
-
+    const { content } = req.body;
+    const log_date = req.body.log_date || new Date().toISOString().split("T")[0]; // Tanggal default 
     try {
         await DailyLog.create({
             log_date,
@@ -58,14 +57,11 @@ export const updateDailyLog = async (req, res) => {
 // Delete Daily Log
 export const deleteDailyLog = async (req, res) => {
     const { logId } = req.params;
-
     try {
         const log = await DailyLog.findByPk(logId);
-
         if (!log) {
             return res.status(404).json({ msg: "Daily log not found" });
         }
-
         await log.destroy();
         res.status(200).json({ msg: "Daily log deleted successfully" });
     } catch (error) {
