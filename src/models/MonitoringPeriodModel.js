@@ -7,7 +7,7 @@ const { DataTypes } = Sequelize;
 const MonitoringPeriod = db.define('monitoring_periods', {
     monitoring_name: {
         type: DataTypes.STRING,
-        allowNull: false,  // Monitoring name is required
+        allowNull: false,  
     },
     start_date: {
         type: DataTypes.DATE,
