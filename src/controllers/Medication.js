@@ -4,16 +4,15 @@ import { createNotificationsForMedication } from "./Notification.js";
 // Create Medication for a specific Monitoring Period
 export const createMedication = async (req, res) => {
     const { medication_name, frequency, before_after_meal, schedule_time } = req.body;
-    const { monitoringPeriodId } = req.params;  // Mengambil monitoringPeriodId dari URL parameter
+    const { monitoringPeriodId } = req.params;
     try {
         const medication = await Medications.create({
             medication_name,
-            frequency, // ["morning", "afternoon", "evening"]
+            frequency,
             before_after_meal,
-            schedule_time, // ["08:00", "12:00", "20:00"]
-            monitoringPeriodId,  // Gunakan monitoringPeriodId dari URL
+            schedule_time,
+            monitoringPeriodId,
         });
-        // Buat notifikasi otomatis
         await createNotificationsForMedication(medication);
         res.status(201).json({ msg: "Medication added successfully"});
     } catch (error) {
@@ -25,7 +24,7 @@ export const createMedication = async (req, res) => {
 
 // Read Medications
 export const getMedications = async (req, res) => {
-    const { monitoringPeriodId } = req.params; // Ambil ID dari parameter URL
+    const { monitoringPeriodId } = req.params;
     try {
         const medications = await Medications.findAll({
             where: { monitoringPeriodId },
@@ -43,11 +42,10 @@ export const getMedications = async (req, res) => {
 
 // Update Medication
 export const updateMedication = async (req, res) => {
-    const { id, monitoringPeriodId } = req.params; // Ambil ID dari parameter URL
+    const { id, monitoringPeriodId } = req.params;
     const { medication_name, frequency, before_after_meal, schedule_time } = req.body;
 
     try {
-        // Cari berdasarkan ID dan monitoringPeriodId
         const medication = await Medications.findOne({
             where: { id, monitoringPeriodId },
         });
@@ -72,18 +70,15 @@ export const updateMedication = async (req, res) => {
 
 // Delete Medication
 export const deleteMedication = async (req, res) => {
-    const { id, monitoringPeriodId } = req.params; // Ambil ID dari parameter URL
+    const { id, monitoringPeriodId } = req.params;
 
     try {
-        // Cari berdasarkan ID dan monitoringPeriodId
         const medication = await Medications.findOne({
             where: { id, monitoringPeriodId },
         });
         if (!medication) {
             return res.status(404).json({ msg: "Medication not found" });
         }
-
-        // Hapus medication
         await Medications.destroy({
             where: { id, monitoringPeriodId },
         });
