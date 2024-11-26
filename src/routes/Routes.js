@@ -2,12 +2,14 @@ import express from "express";
 import { getUsers, Register, Login, Logout } from '../controllers/Users.js';
 import { verifyToken } from "../middleware/verifyToken.js";
 import { refreshToken } from "../controllers/RefreshToken.js";
-import { getHomepageData } from "../controllers/Homepage.js";
-import { createMonitoringPeriod, getMonitoringPeriods, updateMonitoringPeriod, deleteExpiredMonitoringPeriods, deleteMonitoringPeriod } from '../controllers/MonitoringPeriod.js';
+import { getActiveMonitoringPeriods } from "../controllers/Homepage.js";
+import { createMonitoringPeriod, getMonitoringPeriods, updateMonitoringPeriod, deleteMonitoringPeriod } from '../controllers/MonitoringPeriod.js';
 import { createMedication, getMedications, updateMedication, deleteMedication } from "../controllers/Medication.js";
 import { createNotificationsForMedication, getNotifications, updateNotificationStatus } from "../controllers/Notification.js";
 import { createFoodEntry, getFoodEntries, updateFoodEntry, deleteFoodEntry } from "../controllers/Food.js";
 import { createDailyLog, getDailyLogs, updateDailyLog, deleteDailyLog } from "../controllers/DailyLog.js";
+import { getMedicationReport, getFoodReport, getDailyLogReport, getReportForChart, } from "../controllers/Report.js";
+
 const router = express.Router();
 
 // Authentication
@@ -18,13 +20,12 @@ router.get('/auth/token', refreshToken);
 router.delete('/auth/logout', Logout);
 
 // Homepage
-router.get('/homepage', verifyToken, getHomepageData);
+router.get('/homepage', verifyToken, getActiveMonitoringPeriods);
 
 // Monitoring Periods
 router.post('/monitoring-periods', verifyToken, createMonitoringPeriod);
 router.get('/monitoring-periods', verifyToken, getMonitoringPeriods);
 router.put('/monitoring-periods/:id', verifyToken, updateMonitoringPeriod);
-router.delete("/monitoring-periods/expired", verifyToken, deleteExpiredMonitoringPeriods);
 router.delete("/monitoring-periods/:id", verifyToken, deleteMonitoringPeriod);  
 
 // Medication
@@ -44,13 +45,16 @@ router.get('/monitoring-periods/:monitoringPeriodId/foods', verifyToken, getFood
 router.put('/food/:id', verifyToken, updateFoodEntry);
 router.delete('/food/:id', verifyToken, deleteFoodEntry);
 
-
 // Daily Log
 router.post("/monitoring-periods/:monitoringPeriodId/logs", verifyToken, createDailyLog);
 router.get("/monitoring-periods/:monitoringPeriodId/logs", verifyToken, getDailyLogs);
 router.put("/logs/:logId", verifyToken, updateDailyLog);
 router.delete("/logs/:logId", verifyToken, deleteDailyLog);
 
-
+// Reports
+router.get("/:monitoringPeriodId/medications", verifyToken, getMedicationReport);
+router.get("/:monitoringPeriodId/foods", verifyToken, getFoodReport);
+router.get("/:monitoringPeriodId/logs", verifyToken, getDailyLogReport);
+router.get("/:monitoringPeriodId/reports", verifyToken, getReportForChart);
 
 export default router;

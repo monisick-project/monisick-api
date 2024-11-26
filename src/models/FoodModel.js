@@ -42,7 +42,7 @@ const Food = sequelize.define("food", {
     monitoringPeriodId: {
         type: DataTypes.INTEGER,
         references: {
-            model: "monitoring_periods", 
+            model: "monitoring_periods", // Nama tabel MonitoringPeriod
             key: "id",
         },
         allowNull: false,

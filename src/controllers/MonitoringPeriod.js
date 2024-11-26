@@ -21,11 +21,17 @@ export const createMonitoringPeriod = async (req, res) => {
 
 // Get Monitoring Periods for the User
 export const getMonitoringPeriods = async (req, res) => {
-    const userId = req.userId; 
+    const userId = req.userId;
+    const { status } = req.query; // Menambahkan query parameter untuk status
     try {
+        const whereClause = { user_id: userId };
+        if (status) {
+            whereClause.status = status; // Menyaring berdasarkan status (active/expired)
+        }
+
         const monitoringPeriods = await MonitoringPeriod.findAll({
-            where: { user_id: userId },
-            attributes: ['monitoring_name', 'start_date', 'end_date', 'user_id'],
+            where: whereClause,
+            attributes: ['monitoring_name', 'start_date', 'end_date', 'status'],
         });
         res.json(monitoringPeriods);
     } catch (error) {
@@ -33,6 +39,7 @@ export const getMonitoringPeriods = async (req, res) => {
         res.status(500).json({ msg: "Server error" });
     }
 };
+
 
 // Update Monitoring Period
 export const updateMonitoringPeriod = async (req, res) => {
@@ -58,31 +65,24 @@ export const updateMonitoringPeriod = async (req, res) => {
     }
 };
 
-// Delete Monitoring Period (Automatic - if end_date has passed)
-export const deleteExpiredMonitoringPeriods = async (req, res) => {
+// Update status monitoring period yang sudah expired
+export const updateExpiredMonitoringPeriod = async () => {
     try {
-        // Menghapus monitoring period yang sudah kedaluwarsa (end_date < sekarang)
-        const result = await MonitoringPeriod.destroy({
-            where: {
-                end_date: { [Op.lt]: new Date() } // end_date lebih kecil dari tanggal sekarang
+        await MonitoringPeriod.update(
+            { status: 'expired' }, 
+            {
+                where: {
+                    end_date: { [Op.lt]: new Date() }, // Jika end_date < hari ini
+                    status: 'active', 
+                },
             }
-        });
-
-        if (result > 0) {
-            res.json({ 
-                msg: "Expired monitoring periods and related medications deleted successfully", 
-                deletedCount: result 
-            });
-        } else {
-            res.json({
-                msg: "No expired monitoring periods found."
-            });
-        }
+        );
+        console.log("Expired monitoring periods updated to 'expired'.");
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: "Server error" });
+        console.error("Error updating expired monitoring periods:", error);
     }
 };
+
 
 
 // Delete Monitoring Period (Manual)
