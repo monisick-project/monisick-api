@@ -1,2 +1,0 @@
-end_date tidak boleh kurang dari start_date
-delete manual monitoring periode belum bisa

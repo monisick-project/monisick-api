@@ -5,6 +5,10 @@ import Medications from "./MedicationModel.js";
 const { DataTypes } = Sequelize;
 
 const MonitoringPeriod = db.define('monitoring_periods', {
+    monitoring_name: {
+        type: DataTypes.STRING,
+        allowNull: false,  // Monitoring name is required
+    },
     start_date: {
         type: DataTypes.DATE,
         allowNull: false
@@ -20,6 +24,10 @@ const MonitoringPeriod = db.define('monitoring_periods', {
             model: Users,
             key: 'id'
         }
+    },
+    status: {
+        type: DataTypes.ENUM('active', 'expired'),
+        defaultValue: 'active', // Status default adalah 'active'
     }
 }, {
     freezeTableName: true
