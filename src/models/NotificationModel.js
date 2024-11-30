@@ -15,9 +15,8 @@ const Notifications = db.define("notifications", {
         allowNull: false,
     },
     status: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: "pending", // 'pending', 'taken', or 'missed'
+        type: DataTypes.ENUM('taken', 'missed'),
+        defaultValue: 'missed',
     },
     scheduled_time: {
         type: DataTypes.TIME,

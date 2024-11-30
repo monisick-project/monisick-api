@@ -4,9 +4,9 @@ import { verifyToken } from "../middleware/verifyToken.js";
 import { refreshToken } from "../controllers/RefreshToken.js";
 import { getActiveMonitoringPeriods } from "../controllers/Homepage.js";
 import { createMonitoringPeriod, getMonitoringPeriods, updateMonitoringPeriod, deleteMonitoringPeriod } from '../controllers/MonitoringPeriod.js';
-import { createMedication, getMedications, updateMedication, deleteMedication } from "../controllers/Medication.js";
-import { createNotificationsForMedication, getNotifications, updateNotificationStatus } from "../controllers/Notification.js";
-import { createFoodEntry, getFoodEntries, updateFoodEntry, deleteFoodEntry } from "../controllers/Food.js";
+import { createMedication, getMedications, updateMedication } from "../controllers/Medication.js";
+import { getNotifications, updateNotificationStatus } from "../controllers/Notification.js";
+import { createFoodEntry, getFoodEntries, deleteFoodEntry } from "../controllers/Food.js";
 import { createDailyLog, getDailyLogs, updateDailyLog, deleteDailyLog } from "../controllers/DailyLog.js";
 import { getMedicationReport, getFoodReport, getDailyLogReport, getReportForChart, } from "../controllers/Report.js";
 
@@ -32,17 +32,14 @@ router.delete("/monitoring-periods/:id", verifyToken, deleteMonitoringPeriod);
 router.post("/monitoring-periods/:monitoringPeriodId/medications", verifyToken, createMedication);
 router.get('/monitoring-periods/:monitoringPeriodId/medications', verifyToken, getMedications);
 router.put("/monitoring-periods/:monitoringPeriodId/medications/:id", verifyToken, updateMedication);
-router.delete("/monitoring-periods/:monitoringPeriodId/medications/:id", verifyToken, deleteMedication);
 
 // Notifications Medication
-router.post('/notifications', verifyToken, createNotificationsForMedication);
 router.get('/medications/:medicationId/notifications', verifyToken, getNotifications);
 router.patch('/notifications/:id', verifyToken, updateNotificationStatus);
 
 // Food
 router.post("/food", verifyToken, createFoodEntry);
 router.get('/monitoring-periods/:monitoringPeriodId/foods', verifyToken, getFoodEntries);
-router.put('/food/:id', verifyToken, updateFoodEntry);
 router.delete('/food/:id', verifyToken, deleteFoodEntry);
 
 // Daily Log

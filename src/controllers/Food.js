@@ -4,7 +4,7 @@ import { Op } from "sequelize";
 
 // Create Food Entry and associate it with all active monitoring periods for the user
 export const createFoodEntry = async (req, res) => {
-    const { food_time, food_name, calories, proteins, carbo, fats, massa } = req.body;
+    const { food_time, calories, proteins, carbo, fats, massa } = req.body;
     const userId = req.userId; // User ID from decoded JWT token
     try {
         // Find all active monitoring periods for the user
@@ -26,7 +26,6 @@ export const createFoodEntry = async (req, res) => {
         for (let period of activeMonitoringPeriods) {
             const foodEntry = await Food.create({
                 food_time,
-                food_name,
                 calories,
                 proteins,
                 carbo,
@@ -56,7 +55,6 @@ export const getFoodEntries = async (req, res) => {
             },
             attributes: [
                 "food_time",
-                "food_name",
                 "calories",
                 "proteins",
                 "carbo",
@@ -78,50 +76,6 @@ export const getFoodEntries = async (req, res) => {
     }
 };
 
-// Update a food entry
-export const updateFoodEntry = async (req, res) => {
-    const { id } = req.params; // ID food entry
-    const { food_time, food_name, calories, proteins, carbo, fats, massa } = req.body;
-    const userId = req.userId; // Dapatkan user ID dari token JWT
-
-    try {
-        // Cari food entry berdasarkan ID
-        const foodEntry = await Food.findByPk(id);
-
-        if (!foodEntry) {
-            return res.status(404).json({ msg: "Food entry not found" });
-        }
-
-        // Cek apakah monitoring period terkait sudah expired
-        const monitoringPeriod = await MonitoringPeriod.findOne({
-            where: { id: foodEntry.monitoringPeriodId, user_id: userId },
-        });
-
-        if (!monitoringPeriod) {
-            return res.status(404).json({ msg: "Monitoring period not found" });
-        }
-
-        if (monitoringPeriod.status === "expired") {
-            return res.status(400).json({ msg: "Cannot update food entry. Monitoring period is expired." });
-        }
-
-        // Update food entry
-        await foodEntry.update({
-            food_time,
-            food_name,
-            calories,
-            proteins,
-            carbo,
-            fats,
-            massa,
-        });
-
-        res.status(200).json({ msg: "Food entry updated successfully" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: "Server error while updating food entry" });
-    }
-};
 
 // Delete a food 
 export const deleteFoodEntry = async (req, res) => {

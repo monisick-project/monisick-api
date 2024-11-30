@@ -99,9 +99,9 @@ export const deleteMonitoringPeriod = async (req, res) => {
             return res.status(404).json({ msg: "Monitoring Period not found" });
         }
 
-        await monitoringPeriod.destroy(); // Cascade delete medications
+        await monitoringPeriod.destroy();
 
-        res.json({ msg: "Monitoring Period and related medications deleted successfully" });
+        res.json({ msg: "Monitoring Period deleted successfully" });
     } catch (error) {
         console.error(error);
         res.status(500).json({ msg: "Server error" });

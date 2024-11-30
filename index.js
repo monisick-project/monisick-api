@@ -8,6 +8,7 @@ import db from "./src/config/Database.js";
 import router from "./src/routes/Routes.js";
 import cron from "node-cron"; 
 import { updateExpiredMonitoringPeriod } from "./src/controllers/MonitoringPeriod.js";
+
 dotenv.config();
 
 

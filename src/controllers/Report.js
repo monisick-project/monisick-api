@@ -39,7 +39,6 @@ export const getFoodReport = async (req, res) => {
             attributes: [
                 "food_date",
                 "food_time", // Breakfast, Lunch, Dinner
-                "food_name",
                 "calories",
                 "proteins",
                 "carbo",

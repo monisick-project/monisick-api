@@ -15,10 +15,6 @@ const Food = sequelize.define("food", {
         type: DataTypes.ENUM("breakfast", "lunch", "dinner"),
         allowNull: false,
     },
-    food_name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
     calories: {
         type: DataTypes.FLOAT,
         allowNull: false,
@@ -46,6 +42,7 @@ const Food = sequelize.define("food", {
             key: "id",
         },
         allowNull: false,
+        onDelete: "CASCADE" 
     },
 });
 

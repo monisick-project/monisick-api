@@ -2,6 +2,8 @@ import { Op } from 'sequelize';
 import Notifications from "../models/NotificationModel.js";
 import Medications from "../models/MedicationModel.js";
 import MonitoringPeriod from "../models/MonitoringPeriodModel.js";
+import cron from 'node-cron';
+import moment from 'moment'; // Untuk memeriksa waktu saat ini
 
 // Create notifications for medication
 export const createNotificationsForMedication = async (medication) => {
@@ -15,16 +17,7 @@ export const createNotificationsForMedication = async (medication) => {
             console.error("Monitoring Period not found");
             return;
         }
-        // Cek apakah monitoring period sudah expired
-        if (monitoringPeriod.status === "expired") {
-            console.error("Cannot create notifications. Monitoring period is expired.");
-            // Menonaktifkan semua notifikasi yang ada untuk obat ini setelah expired
-            await Notifications.update(
-                { status: 'inactive' },
-                { where: { medicationId: id } }
-            );
-            return;
-        }
+
         // Buat notifikasi berdasarkan schedule_time
         const notifications = schedule_time.map((time) => ({
             message: `Time to take your medication: ${medication_name}`,
@@ -37,6 +30,7 @@ export const createNotificationsForMedication = async (medication) => {
         console.error("Error creating notifications:", error);
     }
 };
+
 
 // Get all notifications for a specific medication
 export const getNotifications = async (req, res) => {
@@ -57,18 +51,9 @@ export const getNotifications = async (req, res) => {
         if (!monitoringPeriod) {
             return res.status(404).json({ msg: "Monitoring Period not found" });
         }
-        // Cek apakah monitoring period sudah expired
-        if (monitoringPeriod.status === 'expired') {
-            // Menandai semua notifikasi untuk dihentikan
-            await Notifications.update(
-                { status: 'inactive' },
-                { where: { medicationId: medicationId } }
-            );
-            return res.status(400).json({ msg: "Cannot display notifications. Monitoring period is expired." });
-        }
-        // Ambil notifikasi terkait medication yang statusnya masih aktif
+
+        // Ambil notifikasi aktif terkait medication ini
         const notifications = await Notifications.findAll({
-            where: { medicationId, status: { [Op.ne]: 'inactive' } },
             attributes: ["message", "status", "scheduled_time"],
         });
         if (!notifications.length) {
@@ -85,7 +70,7 @@ export const getNotifications = async (req, res) => {
 export const updateNotificationStatus = async (req, res) => {
     const { id } = req.params; 
     const { status } = req.body; 
-    if (!["taken", "missed", "inactive"].includes(status)) {
+    if (!["taken", "missed"].includes(status)) {
         return res.status(400).json({ msg: "Invalid status" });
     }
     try {
